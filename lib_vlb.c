@@ -27,3 +27,41 @@ destructor (unsigned char *me)
 	                me);
 	return TRUE;
 }
+
+
+boolean mem_w_handler (unsigned int address, unsigned int data, int size,
+                       boolean T, int source, boolean* abort)
+{
+	fprintf(stderr, "=============================\n"
+	                "= Write Handler\n"
+	                "=   address = 0x%08x\n"
+	                "=   data    = 0x%08x\n"
+	                "=   size    = 0x%08x\n"
+	                "=   T       = %d\n"
+	                "=   source  = 0x%08x\n"
+	                "=   *abort  = %d\n"
+	                "=============================\n",
+	                address, data, size, T, source,
+	                (abort!=NULL) ? (*abort) : 0);
+	
+	return FALSE;
+}
+
+
+boolean mem_r_handler (unsigned int address, unsigned int *data, int size,
+                       boolean sign, boolean T, int source, boolean* abort)
+{
+	fprintf(stderr, "=============================\n"
+	                "= Read Handler\n"
+	                "=   address = 0x%08x\n"
+	                "=   size    = 0x%08x\n"
+	                "=   T       = %d\n"
+	                "=   source  = 0x%08x\n"
+	                "=   *abort  = %d\n"
+	                "=============================\n",
+	                address, size, T, source,
+	                (abort!=NULL) ? (*abort) : 0);
+	
+	(*data) = 1337;
+	return TRUE;
+}
