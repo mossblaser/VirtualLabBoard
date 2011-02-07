@@ -1,8 +1,20 @@
 #include <stdio.h>
+#include <pthread.h>
+
+#include "gui.h"
 
 #define TRUE  (0==0)
 #define FALSE (0!=0)
 typedef int boolean;
+
+void *
+my_thread(void *attrs)
+{
+	gui_start();
+	return NULL;
+}
+
+pthread_t *thread;
 
 boolean
 constructor (unsigned char *me, unsigned char *string)
@@ -13,6 +25,9 @@ constructor (unsigned char *me, unsigned char *string)
 	                "=   string = '%s'\n"
 	                "=============================\n",
 	                me, string);
+	
+	       pthread_create(thread, NULL, my_thread, NULL);
+	
 	return TRUE;
 }
 
