@@ -37,7 +37,7 @@ draw_lcd(GtkWidget *widget, gpointer data)
 
 
 int shmid;
-void *shm;
+shm_data_t *shm = NULL;
 
 int
 main(int argc, char *argv[])
@@ -55,7 +55,7 @@ main(int argc, char *argv[])
 		return 2;
 	}
 	
-	fprintf(stderr, "SHM: %d\n", *((int*)shm));
+	shmdt(shm);
 	
 	
 	GtkWidget *window;
