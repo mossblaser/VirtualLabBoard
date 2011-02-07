@@ -7,12 +7,12 @@
 
 shm_t shm;
 
-boolean
-setup_shm(void)
+static boolean
+create_shm(void)
 {
 	// Initialise the struct
 	shm.mem = NULL;
-	shm.connected = TRUE;
+	shm.connected = FALSE;
 	
 	// Create the shared memory area
 	shm.id = shmget(VLB_SHM_ID, VLB_SHM_SIZE, IPC_CREAT | VLB_SHM_FLG);
@@ -31,7 +31,7 @@ setup_shm(void)
 }
 
 
-boolean
+static boolean
 free_shm(void)
 {
 	// Detatch the shared memory if attatched
@@ -42,13 +42,15 @@ free_shm(void)
 }
 
 
-void
+static void
 init_shm(void)
 {
-	int i;
-	for (i = 0; i < VLB_MEMORY_SIZE; i++) {
-		shm.mem->writeable[i] = TRUE;
-		shm.mem->memory[i] = 0x00;
+	if (shm.connected) {
+		int i;
+		for (i = 0; i < VLB_MEMORY_SIZE; i++) {
+			shm.mem->writeable[i] = TRUE;
+			shm.mem->memory[i] = 0x00;
+		}
 	}
 }
 
@@ -63,13 +65,12 @@ constructor (unsigned char *me, unsigned char *string)
 {
 	fprintf(stderr, "Starting Virtual Lab Board...\n");
 
-	if (!setup_shm()) {
+	if (!create_shm()) {
 		fprintf(stderr, "ERROR: vlb: Could not create SHM.\n");
 		return FALSE;
 	}
 	
 	init_shm();
-	
 	return TRUE;
 }
 

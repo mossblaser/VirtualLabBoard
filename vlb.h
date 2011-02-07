@@ -16,10 +16,6 @@ typedef int boolean;
 #define VLB_MEMORY_START 0x10000000u
 #define VLB_MEMORY_SIZE  (2 * 4)
 
-#define VLB_SHM_ID    941
-#define VLB_SHM_SIZE sizeof(vlb_memory_t)
-#define VLB_SHM_FLG  0600
-
 
 typedef struct {
 	// For each address, is it writeable?
@@ -36,5 +32,9 @@ typedef struct {
 	boolean       connected;
 } shm_t;
 
+
+#define VLB_SHM_ID    941
+#define VLB_SHM_SIZE sizeof(vlb_memory_t)
+#define VLB_SHM_FLG  0600
 
 #endif

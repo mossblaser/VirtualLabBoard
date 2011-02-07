@@ -3,12 +3,6 @@
 
 #include "vlb.h"
 
-/* Functions which manage the SHM. */
-boolean setup_shm(void);
-boolean free_shm(void);
-
-void init_shm(void);
-
 
 /* Functions called by Jimulator */
 boolean constructor(unsigned char *me, unsigned char *string);
