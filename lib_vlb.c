@@ -1,20 +1,15 @@
 #include <stdio.h>
-#include <pthread.h>
 
-#include "gui.h"
+#include "vlb.h"
 
 #define TRUE  (0==0)
 #define FALSE (0!=0)
 typedef int boolean;
 
-void *
-my_thread(void *attrs)
-{
-	gui_start();
-	return NULL;
-}
+boolean shm_connected = FALSE;
+int shmid;
+void *shm;
 
-pthread_t *thread;
 
 boolean
 constructor (unsigned char *me, unsigned char *string)
@@ -26,7 +21,22 @@ constructor (unsigned char *me, unsigned char *string)
 	                "=============================\n",
 	                me, string);
 	
-	       pthread_create(thread, NULL, my_thread, NULL);
+	shmid = shmget(VLB_SHM_ID, VLB_SHM_SIZE, IPC_CREAT | VLB_SHM_FLG);
+	if (shmid == -1) {
+		fprintf(stderr, "Failed to create SHM!");
+		return FALSE;
+	}
+	
+	shm = shmat(shmid, NULL, 0);
+	// This peutrid cast is specified by SHM
+	if (shm == (void *)-1) {
+		fprintf(stderr, "Failed to attatch SHM!");
+		return FALSE;
+	}
+	
+	*((int *)shm) = 1337;
+	
+	shm_connected = TRUE;
 	
 	return TRUE;
 }
@@ -40,6 +50,10 @@ destructor (unsigned char *me)
 	                "=   me     = '%s'\n"
 	                "=============================\n",
 	                me);
+	
+	if (shm_connected)
+		shmdt(shm);
+	
 	return TRUE;
 }
 
@@ -66,17 +80,17 @@ boolean mem_w_handler (unsigned int address, unsigned int data, int size,
 boolean mem_r_handler (unsigned int address, unsigned int *data, int size,
                        boolean sign, boolean T, int source, boolean* abort)
 {
-	fprintf(stderr, "=============================\n"
-	                "= Read Handler\n"
-	                "=   address = 0x%08x\n"
-	                "=   size    = 0x%08x\n"
-	                "=   T       = %d\n"
-	                "=   source  = 0x%08x\n"
-	                "=   *abort  = %d\n"
-	                "=============================\n",
-	                address, size, T, source,
-	                (abort!=NULL) ? (*abort) : 0);
-	
+	//fprintf(stderr, "=============================\n"
+	//                "= Read Handler\n"
+	//                "=   address = 0x%08x\n"
+	//                "=   size    = 0x%08x\n"
+	//                "=   T       = %d\n"
+	//                "=   source  = 0x%08x\n"
+	//                "=   *abort  = %d\n"
+	//                "=============================\n",
+	//                address, size, T, source,
+	//                (abort!=NULL) ? (*abort) : 0);
+	//
 	(*data) = 1337;
 	return TRUE;
 }

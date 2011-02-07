@@ -1,6 +1,3 @@
-#include <gtk/gtk.h>
-#include <cairo.h>
-
 #include "gui.h"
 
 static void
@@ -37,13 +34,34 @@ draw_lcd(GtkWidget *widget, gpointer data)
 }
 
 
-void
-gui_start(void)
+
+
+int shmid;
+void *shm;
+
+int
+main(int argc, char *argv[])
 {
+	shmid = shmget(VLB_SHM_ID, VLB_SHM_SIZE, VLB_SHM_FLG);
+	if (shmid == -1) {
+		fprintf(stderr, "Failed to create SHM!");
+		return 1;
+	}
+	
+	shm = shmat(shmid, NULL, 0);
+	// This peutrid cast is specified by SHM
+	if (shm == (void *)-1) {
+		fprintf(stderr, "Failed to attatch SHM!");
+		return 2;
+	}
+	
+	fprintf(stderr, "SHM: %d\n", *((int*)shm));
+	
+	
 	GtkWidget *window;
 	GtkWidget *lcd;
 	
-	gtk_init(NULL, NULL);
+	gtk_init(&argc, &argv);
 	
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 10);
@@ -59,5 +77,6 @@ gui_start(void)
 	gtk_widget_show(window);
 	
 	gtk_main();
+	return 0;
 }
 
