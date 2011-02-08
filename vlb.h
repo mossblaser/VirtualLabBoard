@@ -7,10 +7,12 @@
 #include <sys/shm.h>
 
 
-#define TRUE  (0==0)
-#define FALSE (0!=0)
-typedef int boolean;
+#ifndef TRUE
+	#define TRUE  (0==0)
+	#define FALSE (0!=0)
+#endif
 
+typedef int boolean;
 
 // Two words of memory -- ports A and B
 #define VLB_MEMORY_START 0x10000000u

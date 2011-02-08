@@ -114,9 +114,9 @@ mem_w_handler(unsigned int address, unsigned int data, int size,
 			fprintf(stderr, "WARNING: vlb: Write to unwriteable memory!\n");
 		
 		fprintf(stderr, "INFO: vlb: Write 0x%02x to %d\n",
-		                (data >> (8*byte)) & 0xFF,
+		                (data>>byte) & 0xFF,
 		                shm_address);
-		shm.mem->memory[shm_address] = (data>>(8*byte)) & 0xFF;
+		shm.mem->memory[shm_address] = (data>>byte) & 0xFF;
 	}
 	
 	return TRUE;
@@ -146,7 +146,7 @@ mem_r_handler(unsigned int address, unsigned int *data, int size,
 		fprintf(stderr, "INFO: vlb: Read 0x%02x from %d\n",
 		                shm.mem->memory[shm_address],
 		                shm_address);
-		(*data) |= (shm.mem->memory[shm_address]) << (8*byte);
+		(*data) |= (shm.mem->memory[shm_address]) << byte;
 	}
 	
 	return TRUE;
