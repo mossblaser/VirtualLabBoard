@@ -1,7 +1,0 @@
-#ifndef LIB_VLB_H
-#define LIB_VLB_H
-
-#include "vlb.h"
-
-
-#endif
